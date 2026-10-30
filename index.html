@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SPC Studio</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--n:#0f2a43;--ac:#2563eb;--bd:#e3e8ef;--tx:#0f172a;--mu:#64748b;--g:#16a34a;--a:#d97706;--r:#dc2626}
+*{box-sizing:border-box}body{font:14px "Segoe UI",Inter,Arial,sans-serif;margin:0;background:#f4f6fa;color:var(--tx);display:flex;min-height:100vh}
+aside{width:236px;background:var(--n);color:#cbd5e1;padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh;flex:none}
+.lg{color:#fff;font-size:18px;font-weight:700;padding:0 8px 2px}.lg i{color:#60a5fa;font-style:normal}.sb{padding:0 8px 16px;font-size:12px;color:#94a3b8}
+.nv{all:unset;display:flex;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;color:#cbd5e1}.nv:hover{background:#17395a}.nv.on{background:var(--ac);color:#fff}
+.cr{margin-top:auto;font-size:12px;line-height:1.6;border-top:1px solid #23415f;padding:12px 8px 0}.cr b{color:#fff;display:block}.cr a{color:#93c5fd;text-decoration:none;display:block}
+main{flex:1;padding:22px 28px;min-width:0;max-width:1400px}.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}h1{margin:0;font-size:22px;flex:1}h1 small{display:block;font-size:13px;color:var(--mu);font-weight:400;margin-top:2px}
+button,select,input{font:inherit}.bt{padding:8px 14px;border:1px solid var(--bd);background:#fff;border-radius:8px;cursor:pointer;color:var(--tx)}.bt:hover{border-color:var(--ac)}.bt.p{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}.bt.x{color:var(--r)}
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px 18px;box-shadow:0 1px 2px rgba(15,23,42,.04)}.card h2{margin:0 0 12px;font-size:15px}.card h2 small{color:var(--mu);font-weight:400;font-size:12px;margin-left:6px}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}.k{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px 16px;border-top:3px solid var(--ac)}.k span{font-size:12px;color:var(--mu)}.k b{display:block;font-size:26px;margin:4px 0 2px}.k i{font-style:normal;font-size:12px;color:var(--mu)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:14px;margin-bottom:14px}canvas{width:100%;display:block}
+label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mu);font-weight:600}input,select{padding:8px 10px;border:1px solid #cbd5e1;border-radius:8px;width:100%;background:#fff;color:var(--tx)}input:focus,select:focus{outline:2px solid #bfdbfe;border-color:var(--ac)}
+.fm{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.two{display:grid;grid-template-columns:minmax(380px,5fr) 6fr;gap:14px;align-items:start}.st{position:sticky;top:14px;display:flex;flex-direction:column;gap:14px}
+.gw{max-height:440px;overflow:auto;border:1px solid var(--bd);border-radius:8px}table{border-collapse:collapse;width:100%}
+th{background:#f1f5f9;text-align:left;padding:8px 10px;font-size:12px;color:var(--mu);position:sticky;top:0;z-index:1;white-space:nowrap}td{padding:5px 8px;border-top:1px solid #eef1f6}
+.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px 10px;padding:12px}.t{display:flex;flex-direction:column;gap:2px;font-size:11px;color:var(--mu);font-weight:600}.t input{padding:6px 8px;font-variant-numeric:tabular-nums;font-weight:600}.t.ok input{border-color:#86efac;background:#f0fdf4}.t.bad input{border-color:#fca5a5;background:#fef2f2;color:#991b1b}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#e2e8f0}.dot.ok{background:var(--g)}.dot.bad{background:var(--r)}.del{all:unset;cursor:pointer;color:#94a3b8;padding:2px 8px}.del:hover{color:var(--r)}
+.big{display:flex;align-items:center;gap:14px;margin-bottom:12px}.big b{font-size:40px;line-height:1}.big span:first-child{color:var(--mu);font-weight:600}
+.mn{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px}.mn div{background:#f8fafc;border-radius:8px;padding:8px 10px}.mn b{display:block;font-size:16px}.mn span{font-size:11px;color:var(--mu)}
+.b{padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;white-space:nowrap}.b.g{background:#dcfce7;color:#166534}.b.a{background:#fef3c7;color:#92400e}.b.r{background:#fee2e2;color:#991b1b}
+#tb tr{cursor:pointer}#tb tr:hover td{background:#f8fafc}#tb tr.sel td{background:#eff6ff}.hint{font-size:12px;color:var(--mu);margin:8px 0}
+#tip{position:fixed;display:none;background:#0f172a;color:#fff;padding:5px 9px;border-radius:6px;font-size:12px;pointer-events:none;z-index:9}
+.about{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:18px}.about h3{margin:0;font-size:18px}.role{color:var(--mu);margin:2px 0 10px}.about p{color:var(--mu);margin:10px 0}.ah{color:#2e7d5b;text-transform:uppercase;letter-spacing:.06em;font-size:13px!important}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chips span{background:#dcebe4;border-radius:16px;padding:5px 12px;font-size:13px;color:#2b4a3c}.about a{color:#1a56a8;text-decoration:none;display:block;margin:8px 0}.ver{text-align:center;color:var(--mu);padding:16px 0 20px;font-size:13px}
+@media(max-width:900px){body{display:block}aside{position:static;width:auto;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center}.cr,.sb{display:none}.two{grid-template-columns:1fr}.st{position:static}main{padding:14px}}
+</style></head><body>
+<aside><div class="lg">SPC <i>Studio</i></div><div class="sb">Process capability &amp; control</div>
+<button class="nv on" data-v="dash">📊 Dashboard</button><button class="nv" data-v="entry">✏️ Enter Data</button>
+</aside>
+<main>
+<section id="dash">
+<div class="top"><h1>Dashboard<small>Overall process capability across all saved records</small></h1><label>Month<select id="fm"></select></label><label>Item<select id="fi"></select></label><button class="bt p" id="xl" style="align-self:end">⬇ Download Excel</button></div>
+<div class="kp" id="kpi"></div>
+<div class="card" style="margin-bottom:14px"><h2>Cpk ranking<small>click a bar to inspect · green line 1.33 = capable · red line 1.00 = minimum</small></h2><canvas id="d1"></canvas></div>
+<div class="g2"><div class="card"><h2 id="t2">Control chart</h2><canvas id="d2"></canvas></div><div class="card"><h2>Distribution vs specification</h2><canvas id="d3"></canvas></div></div>
+<div class="card"><h2>All records<small>click a row to see its charts</small></h2><div class="gw"><table><thead><tr><th>Date</th><th>Item</th><th>Batch</th><th>n</th><th>Mean</th><th>Std dev</th><th>Cp</th><th>Cpk</th><th>% in spec</th><th>Out</th><th>Status</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div>
+</section>
+<section id="entry" hidden>
+<div class="top"><h1>Enter Data<small>Fill the details, then type or paste measurements into the sample boxes. Results update instantly.</small></h1><button class="bt" id="ld">Load sample</button><button class="bt" id="cl">New / clear values</button><button class="bt p" id="sv">💾 Save record</button></div>
+<div class="two"><div style="display:flex;flex-direction:column;gap:14px">
+<div class="card"><h2>1 · Details</h2><div class="fm"><label>Item<input id="f_item"></label><label>Parameter<input id="f_param"></label><label>Unit<input id="f_unit"></label><label>Batch No.<input id="f_batch"></label>
+<label>Date<input type="date" id="f_date"></label><label>Shift<select id="f_shift"><option value="">—</option><option>Morning</option><option>Evening</option><option>Night</option></select></label>
+<label>Target (mid point)<input type="number" step="any" id="f_mid"></label><label>Allowed deviation ±<input type="number" step="any" id="f_tol"></label></div></div>
+<div class="card"><h2>2 · Measurements<small id="cnt"></small></h2>
+<div class="gw"><div id="g" class="tg"></div></div>
+<div class="hint">Type a value and press <b>Enter</b> to jump to the next box — new boxes appear automatically · paste a column from Excel into any box to fill them all · <b>Backspace</b> on an empty box removes it · <span style="color:#16a34a">■</span> in spec <span style="color:#dc2626">■</span> out of spec</div>
+<button class="bt" id="ar">+ Add 10 boxes</button> <small id="msg" style="color:var(--r)"></small></div></div>
+<div class="st"><div class="card"><div class="big"><span>Cpk</span><b id="rk">—</b><span class="b" id="rb"></span></div><div class="mn" id="mini"></div></div>
+<div class="card"><h2>Control chart<small>hover a point for its value</small></h2><canvas id="c1"></canvas></div><div class="card"><h2>Distribution</h2><canvas id="c2"></canvas></div></div></div>
+</section>
+<div class="about">
+<section class="card"><h2 class="ah">👤 Built by</h2><h3>Md Shahariar Ahmed</h3><div class="role">Developer</div>
+<div class="chips"><span>📜 EIT (APEGS)</span><span>🥋 LSS Green Belt</span><span>🎓 M.Eng Industrial Systems Engineering</span><span>🎓 B.Sc Mechanical Engineering</span></div>
+<p>Designed and built this app to make SPC data entry, process capability analysis and quality dashboards fast, private, and free.</p></section>
+<section class="card"><h2 class="ah">✉️ Contact &amp; Feedback</h2>
+<a href="mailto:jobexperience01@gmail.com">📧 jobexperience01@gmail.com</a>
+<a href="https://orcid.org/0009-0003-6480-4817" target="_blank" rel="noopener">🆔 ORCID: 0009-0003-6480-4817</a>
+<p>Found a bug or have a feature request? Reach out any time.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="bt" id="shr">🔗 Share this app</button><button class="bt" id="fb">📝 Send feedback</button></div></section>
+</div>
+<div class="ver">SPC Studio · v1.0.0</div>
+</main><div id="tip"></div>
+<script>
+const $=s=>document.querySelector(s),f=(n,d=2)=>isFinite(n)?(+n).toFixed(d):'—';
+const DEF={item:'Casted Grid CDB1.45',param:'Weight',unit:'gm',batch:'17F04M01',date:'2017-06-01',shift:'',mid:126,tol:4,
+vals:[126,126.4,125.9,125.9,126.8,127.2,127.1,127.2,127,126,127.8,127.6,127.4,127.2,127.6,126.9,126.9,123.8,124,124.2,124.6,124.8,125.2,124.8,125,126.2,126,125.8,125.8,125.8,125.6,126,126,126.1,126.2,126,124.8,124.8,124.6,124.5,125.2,125,126.4,126.2,126.4,126.3,125.8,125.8,125.4,125.6]};
+let db;try{db=JSON.parse(localStorage.getItem('spc'))}catch(e){}
+if(!db||!db.recs)db={recs:[{...DEF,id:'d1'}]};
+const save=()=>{try{localStorage.setItem('spc',JSON.stringify(db))}catch(e){}};
+let sel=db.recs[0]?.id,F;
+const mk=(r,id)=>({...r,id:id||null,vals:[...r.vals.map(String),'']});
+const erf=x=>{const t=1/(1+.3275911*Math.abs(x)),y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x);return x<0?-y:y},Phi=z=>.5*(1+erf(z/Math.SQRT2));
+function stat(r){const v=r.vals,n=v.length;if(n<2||!isFinite(r.mid)||!r.tol)return{n};const m=v.reduce((a,b)=>a+b,0)/n,s=Math.sqrt(v.reduce((a,b)=>a+(b-m)**2,0)/(n-1)),L=r.mid-r.tol,U=r.mid+r.tol,cp=(U-L)/(6*s),cpk=(1-Math.abs(r.mid-m)/r.tol)*cp;
+ return{n,m,s,L,U,cp,cpk,pw:100*(Phi((U-m)/s)-Phi((L-m)/s)),out:v.filter(a=>a<L||a>U).length,min:Math.min(...v),max:Math.max(...v)}}
+const gr=c=>!isFinite(c)?['—','']:c>=1.33?['Capable','g']:c>=1?['Marginal','a']:['Not capable','r'],CL={g:'#16a34a',a:'#d97706',r:'#dc2626','':'#94a3b8'};
+function setup(c,h){const w=c.clientWidth||600,r=devicePixelRatio||1;c.width=w*r;c.height=h*r;c.style.height=h+'px';c._p=[];const x=c.getContext('2d');x.scale(r,r);x.font='11px "Segoe UI",Arial';x.lineWidth=1;x.setLineDash([]);x.textAlign='left';return[x,w,h]}
+const Yf=(h,a,b)=>v=>h-26-(v-a)/(b-a)*(h-40);
+function axes(x,w,h,P,a,b,d,n=5){const Y=Yf(h,a,b),r=(b-a)/n,m=10**Math.floor(Math.log10(r)),q=r/m,st=(q<1.5?1:q<3?2:q<7?5:10)*m,dd=Math.max(0,-Math.floor(Math.log10(st)+1e-9));x.strokeStyle='#e8ecf2';x.fillStyle='#64748b';x.textAlign='right';x.setLineDash([]);for(let v=Math.ceil(a/st-1e-9)*st;v<=b+1e-9;v+=st){x.beginPath();x.moveTo(P,Y(v));x.lineTo(w-10,Y(v));x.stroke();x.fillText(f(v,dd),P-6,Y(v)+4)}x.textAlign='left'}
+const pill=(x,t,px,py,al,k)=>{const wd=x.measureText(t).width+10,lx=al=='right'?px-wd+5:px-5;x.fillStyle='rgba(255,255,255,.9)';x.fillRect(lx,py-11,wd,16);x.fillStyle=k;x.textAlign='left';x.fillText(t,lx+5,py)};
+function msg(x,t){x.fillStyle='#94a3b8';x.fillText(t,16,30)}
+function ctl(c,r){const[x,w,h]=setup(c,260),s=stat(r),v=r.vals;if(!s.s)return msg(x,'Enter at least 2 values (and target / deviation) to see the chart');
+ const lo=Math.min(s.L,s.min),hi=Math.max(s.U,s.max),p=(hi-lo)*.12,a=lo-p,b=hi+p,P=50,Y=Yf(h,a,b),X=i=>P+10+i*(w-P-24)/Math.max(1,v.length-1);
+ axes(x,w,h,P,a,b,2);x.fillStyle='rgba(22,163,74,.08)';x.fillRect(P,Y(s.U),w-10-P,Y(s.L)-Y(s.U));
+ [[s.U,'#dc2626','USL',[],1],[s.L,'#dc2626','LSL',[],1],[r.mid,'#16a34a','Target',[5,4],0],[s.m,'#2563eb','Mean',[2,3],0]].forEach(([y,k,t,d,l])=>{x.strokeStyle=x.fillStyle=k;x.setLineDash(d);x.lineWidth=l?1.6:1.2;x.beginPath();x.moveTo(P,Y(y));x.lineTo(w-10,Y(y));x.stroke();
+  pill(x,t+' '+f(y),t=='Mean'?P+6:w-10,Y(y)+(t=='LSL'?14:-4),t=='Mean'?'left':'right',k)});
+ x.setLineDash([]);x.lineWidth=1.4;x.strokeStyle='#93b4e8';x.beginPath();v.forEach((y,i)=>i?x.lineTo(X(i),Y(y)):x.moveTo(X(i),Y(y)));x.stroke();x.textAlign='left';
+ v.forEach((y,i)=>{const bad=y<s.L||y>s.U;x.fillStyle=bad?'#dc2626':'#2563eb';x.beginPath();x.arc(X(i),Y(y),bad?4.5:3,0,7);x.fill();c._p.push({x:X(i),y:Y(y),t:`Sample ${i+1}: <b>${y}</b>${bad?' ⚠ out of spec':''}`})});
+ x.fillStyle='#64748b';x.textAlign='center';const st=Math.ceil(v.length/10);for(let i=0;i<v.length;i+=st)x.fillText(i+1,X(i),h-8);x.textAlign='left'}
+function his(c,r){const[x,w,h]=setup(c,260),s=stat(r),v=r.vals;if(!s.s)return msg(x,'Enter at least 2 values to see the distribution');
+ const lo=Math.min(s.L,s.min)-s.s,hi=Math.max(s.U,s.max)+s.s,k=Math.min(16,Math.max(8,Math.round(Math.sqrt(v.length)*2))),bw=(hi-lo)/k,cn=Array(k).fill(0);v.forEach(y=>cn[Math.min(k-1,Math.floor((y-lo)/bw))]++);
+ const nd=y=>Math.exp(-.5*((y-s.m)/s.s)**2)/(s.s*Math.sqrt(2*Math.PI))*bw*v.length,mx=Math.max(2,Math.ceil(Math.max(...cn,nd(s.m))*1.15)),P=40,X=y=>P+(y-lo)/(hi-lo)*(w-P-12),Y=Yf(h,0,mx);
+ axes(x,w,h,P,0,mx,0,Math.min(5,mx));x.fillStyle='rgba(220,38,38,.07)';x.fillRect(P,Y(mx),X(s.L)-P,Y(0)-Y(mx));x.fillRect(X(s.U),Y(mx),w-12-X(s.U),Y(0)-Y(mx));
+ cn.forEach((n,i)=>{const m=lo+(i+.5)*bw;x.fillStyle=m<s.L||m>s.U?'#f08a84':'#7fa6dd';x.fillRect(X(lo+i*bw)+1,Y(n),X(lo+bw)-X(lo)-2,Y(0)-Y(n))});
+ x.strokeStyle='#0f2a43';x.lineWidth=1.8;x.beginPath();for(let i=0;i<=90;i++){const y=lo+i*(hi-lo)/90;i?x.lineTo(X(y),Y(nd(y))):x.moveTo(X(y),Y(nd(y)))}x.stroke();x.lineWidth=1.4;
+ [[s.L,'LSL'],[s.U,'USL'],[r.mid,'Target']].forEach(([y,t])=>{x.strokeStyle=x.fillStyle=t=='Target'?'#16a34a':'#dc2626';x.setLineDash(t=='Target'?[5,4]:[]);x.beginPath();x.moveTo(X(y),Y(mx));x.lineTo(X(y),Y(0));x.stroke();pill(x,t+' '+f(y),X(y)+(t=='LSL'?6:-6),Y(mx)+(t=='Target'?32:14),t=='LSL'?'left':'right',x.fillStyle)});
+ x.setLineDash([]);x.fillStyle='#64748b';x.textAlign='center';for(let i=0;i<=5;i++){const y=lo+(hi-lo)*i/5;x.fillText(f(y,1),Math.min(Math.max(X(y),P),w-18),h-8)}x.textAlign='left'}
+function bars(c,L){const rh=36,T=28,h=Math.max(110,T+L.length*rh+10),[x,w]=setup(c,h);if(!L.length)return msg(x,'No records for this filter');
+ const lw=Math.min(230,w*.36),x0=lw+10,x1=w-52,mx=Math.max(2,...L.map(o=>isFinite(o.s.cpk)?o.s.cpk:0))*1.1,X=v=>x0+v/mx*(x1-x0);c._rows=L;c.style.cursor='pointer';
+ L.forEach((o,i)=>{const y=T+i*rh,k=CL[gr(o.s.cpk)[1]];if(o.r.id==sel){x.fillStyle='#eff6ff';x.fillRect(0,y,w,rh)}
+  x.fillStyle='#0f172a';x.textAlign='left';x.fillText((o.r.item.length>26?o.r.item.slice(0,25)+'…':o.r.item),8,y+15);x.fillStyle='#64748b';x.fillText(o.r.date+(o.r.batch?' · '+o.r.batch:''),8,y+29);
+  x.fillStyle=k;x.fillRect(x0,y+8,Math.max(2,X(Math.max(0,o.s.cpk||0))-x0),rh-16);x.fillStyle='#0f172a';x.fillText(f(o.s.cpk),X(Math.max(0,o.s.cpk||0))+6,y+22)});
+ [[1.33,'#16a34a'],[1,'#dc2626']].forEach(([v,k])=>{x.strokeStyle=x.fillStyle=k;x.setLineDash([5,4]);x.beginPath();x.moveTo(X(v),T-6);x.lineTo(X(v),h-6);x.stroke();x.textAlign='center';x.fillText(v.toFixed(2),X(v),T-12)});x.setLineDash([])}
+$('#d1').onclick=e=>{const c=e.target,i=Math.floor((e.clientY-c.getBoundingClientRect().top-28)/36),o=(c._rows||[])[i];if(o){sel=o.r.id;dash()}};
+[$('#d2'),$('#c1')].forEach(c=>{c.onmousemove=e=>{const b=c.getBoundingClientRect(),mx=e.clientX-b.left,my=e.clientY-b.top;let best,d=16;c._p.forEach(p=>{const q=Math.hypot(p.x-mx,p.y-my);if(q<d){d=q;best=p}});const t=$('#tip');if(best){t.innerHTML=best.t;t.style.display='block';t.style.left=e.clientX+12+'px';t.style.top=e.clientY+12+'px'}else t.style.display='none'};c.onmouseleave=()=>$('#tip').style.display='none'});
+const recsF=()=>db.recs.filter(r=>($('#fm').value==''||r.date.slice(0,7)==$('#fm').value)&&($('#fi').value==''||r.item==$('#fi').value)).sort((a,b)=>a.date.localeCompare(b.date));
+function opts(el,arr,all){const c=el.value;el.innerHTML=`<option value="">${all}</option>`+arr.map(a=>`<option>${a}</option>`).join('');el.value=arr.includes(c)?c:''}
+function dash(){opts($('#fm'),[...new Set(db.recs.map(r=>r.date.slice(0,7)))].sort(),'All months');opts($('#fi'),[...new Set(db.recs.map(r=>r.item))].sort(),'All items');
+ const L=recsF().map(r=>({r,s:stat(r)})).filter(o=>o.s.s!=null),ok=L.filter(o=>o.s.cpk>=1.33).length,fin=L.filter(o=>isFinite(o.s.cpk)),av=fin.reduce((a,o)=>a+o.s.cpk,0)/(fin.length||NaN);
+ $('#kpi').innerHTML=[['Records',L.length,'in current filter','#2563eb'],['Average Cpk',f(av),gr(av)[0],CL[gr(av)[1]]],['Capable records',L.length?Math.round(100*ok/L.length)+'%':'—',ok+' of '+L.length+' with Cpk ≥ 1.33','#16a34a'],['Samples out of spec',L.reduce((a,o)=>a+o.s.out,0),'of '+L.reduce((a,o)=>a+o.s.n,0)+' measured','#dc2626'],['Avg % in spec',f(L.reduce((a,o)=>a+o.s.pw,0)/(L.length||NaN))+'%','predicted (normal)','#7c3aed']].map(k=>`<div class="k" style="border-top-color:${k[3]}"><span>${k[0]}</span><b>${k[1]}</b><i>${k[2]}</i></div>`).join('');
+ if(!L.some(o=>o.r.id==sel))sel=L[0]?.r.id;bars($('#d1'),L);const cur=L.find(o=>o.r.id==sel);
+ if(cur){$('#t2').innerHTML='Control chart<small>'+cur.r.item+' · '+cur.r.date+'</small>';ctl($('#d2'),cur.r);his($('#d3'),cur.r)}else{ctl($('#d2'),{vals:[]});his($('#d3'),{vals:[]})}
+ $('#tb').innerHTML=L.map(({r,s})=>{const g=gr(s.cpk);return`<tr class="${r.id==sel?'sel':''}" data-id="${r.id}"><td>${r.date}</td><td><b>${r.item}</b><br><small style="color:#64748b">${r.param} (${r.unit}) · ${r.mid} ± ${r.tol}</small></td><td>${r.batch||''}</td><td>${s.n}</td><td>${f(s.m,3)}</td><td>${f(s.s,3)}</td><td>${f(s.cp)}</td><td><b>${f(s.cpk)}</b></td><td>${f(s.pw)}%</td><td>${s.out}</td><td><span class="b ${g[1]}">${g[0]}</span></td><td style="white-space:nowrap"><button class="bt" data-e="${r.id}">Edit</button> <button class="bt x" data-x="${r.id}">✕</button></td></tr>`}).join('')}
+$('#fm').onchange=$('#fi').onchange=dash;
+$('#tb').onclick=e=>{const t=e.target,id=t.dataset.x||t.dataset.e||t.closest('tr')?.dataset.id;
+ if(t.dataset.x){if(confirm('Delete this record?')){db.recs=db.recs.filter(r=>r.id!=id);save()}dash()}else if(t.dataset.e){load(db.recs.find(r=>r.id==id),id);view('entry')}else if(id){sel=id;dash()}};
+const ids=['item','param','unit','batch','date','shift','mid','tol'];
+const cur=()=>({...F,mid:parseFloat(F.mid),tol:Math.abs(parseFloat(F.tol)),vals:F.vals.map(parseFloat).filter(isFinite)});
+const row=i=>`<div class="t" id="dt${i}"><span>Sample ${i+1}</span><input inputmode="decimal" data-i="${i}" value="${F.vals[i]}"></div>`;
+function grid(fo){$('#g').innerHTML=F.vals.map((_,i)=>row(i)).join('');if(fo!=null){const e=$('#g').querySelectorAll('input')[fo];e&&e.focus()}dots()}
+function load(r,id){F=mk(r,id);ids.forEach(k=>$('#f_'+k).value=F[k]);grid();live()}
+function dots(){const r=cur(),L=r.mid-r.tol,U=r.mid+r.tol;F.vals.forEach((t,i)=>{const e=$('#dt'+i),v=parseFloat(t);if(e)e.className='t '+(!isFinite(v)||!isFinite(L)?'':v<L||v>U?'bad':'ok')})}
+function live(){const r=cur(),s=stat(r),g=gr(s.cpk);dots();$('#cnt').textContent=r.vals.length+' values'+(s.out?' · '+s.out+' out of spec':'');
+ $('#rk').textContent=f(s.cpk);$('#rk').style.color=CL[g[1]];$('#rb').textContent=g[0];$('#rb').className='b '+g[1];
+ $('#mini').innerHTML=s.s==null?'<div><b>'+r.vals.length+'</b><span>values — add at least 2</span></div>':[['Samples',s.n],['Mean',f(s.m,3)],['Std dev',f(s.s,3)],['Cp',f(s.cp)],['% in spec',f(s.pw)+'%'],['Out of spec',s.out],['Min',f(s.min,2)],['Max',f(s.max,2)]].map(k=>`<div><b>${k[1]}</b><span>${k[0]}</span></div>`).join('');
+ if(!$('#entry').hidden){ctl($('#c1'),r);his($('#c2'),r)}}
+document.querySelectorAll('.fm input,.fm select').forEach(e=>e.oninput=()=>{F[e.id.slice(2)]=e.value;live()});
+const g=$('#g');
+g.addEventListener('input',e=>{const t=e.target,i=+t.dataset.i;F.vals[i]=t.value;if(i==F.vals.length-1&&t.value.trim()){F.vals.push('');g.insertAdjacentHTML('beforeend',row(F.vals.length-1))}live()});
+g.addEventListener('keydown',e=>{const i=+e.target.dataset.i,n=g.querySelectorAll('input');if(e.key=='Enter'||e.key=='ArrowDown'){e.preventDefault();(n[i+1]||n[i]).focus()}else if(e.key=='ArrowUp'){e.preventDefault();(n[i-1]||n[i]).focus()}else if(e.key=='Backspace'&&!e.target.value&&i>0&&F.vals.length>1){e.preventDefault();F.vals.splice(i,1);if(F.vals[F.vals.length-1].trim())F.vals.push('');grid(i-1);live()}});
+g.addEventListener('paste',e=>{const v=(e.clipboardData.getData('text')||'').split(/[\s,;]+/).map(parseFloat).filter(isFinite);if(v.length<2)return;e.preventDefault();const i=+e.target.dataset.i;
+ F.vals.splice(i,v.length,...v.map(String));if(F.vals[F.vals.length-1].trim())F.vals.push('');grid(Math.min(i+v.length,F.vals.length-1));live()});
+$('#ar').onclick=()=>{for(let i=0;i<10;i++)F.vals.push('');grid(F.vals.length-10);live()};
+$('#cl').onclick=()=>{F.vals=[''];F.id=null;grid(0);live()};$('#ld').onclick=()=>load(DEF);
+$('#sv').onclick=()=>{const r=cur();if(!r.item||!r.date||!isFinite(r.mid)||!r.tol||r.vals.length<2)return $('#msg').textContent='Fill item, date, target, deviation and at least 2 values.';
+ r.id=F.id||'r'+Date.now();const i=db.recs.findIndex(o=>o.id==r.id);i<0?db.recs.push(r):db.recs[i]=r;save();sel=r.id;$('#msg').textContent='';$('#fm').value=$('#fi').value='';view('dash')};
+function view(v){['dash','entry'].forEach(k=>$('#'+k).hidden=k!=v);document.querySelectorAll('.nv').forEach(b=>b.classList.toggle('on',b.dataset.v==v));v=='dash'?dash():(live(),$('#g').querySelector('input')?.focus())}
+document.querySelectorAll('.nv').forEach(b=>b.onclick=()=>view(b.dataset.v));
+$('#xl').onclick=()=>{if(!window.XLSX)return alert('Excel library did not load. Check your internet connection.');const L=recsF(),wb=XLSX.utils.book_new();
+ XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date','Item','Parameter','Unit','Batch','Shift','Target','Deviation','LSL','USL','n','Mean','Std dev','Cp','Cpk','% in spec','Out of spec','Status'],...L.map(r=>{const s=stat(r);return[r.date,r.item,r.param,r.unit,r.batch,r.shift,r.mid,r.tol,s.L,s.U,s.n,s.m,s.s,s.cp,s.cpk,s.pw,s.out,gr(s.cpk)[0]]})]),'Summary');
+ const mx=Math.max(0,...L.map(r=>r.vals.length));XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([L.map(r=>r.item+' '+r.date),...Array.from({length:mx},(_,i)=>L.map(r=>r.vals[i]??''))]),'Data');XLSX.writeFile(wb,'SPC_records.xlsx')};
+$('#fb').onclick=()=>{location.href='mailto:jobexperience01@gmail.com?subject='+encodeURIComponent('SPC Studio feedback')};
+$('#shr').onclick=async()=>{const u=location.href.startsWith('http')?location.href:'';try{if(navigator.share)await navigator.share({title:'SPC Studio',text:'SPC data entry and process capability dashboard',url:u||undefined});else{await navigator.clipboard.writeText(u||'SPC Studio');alert('Copied to clipboard.')}}catch(e){}};
+addEventListener('resize',()=>$('#dash').hidden?live():dash());
+load(DEF);dash();
+</script></body></html>
